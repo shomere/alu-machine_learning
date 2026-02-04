@@ -54,6 +54,7 @@ def adjugate(matrix):
                         if col_idx != j:
                             subrow.append(matrix[row_idx][col_idx])
                     submatrix.append(subrow)
+            
             # Calculate determinant of submatrix
             # Helper function for determinant calculation
             def calculate_determinant(mat):
@@ -75,6 +76,7 @@ def adjugate(matrix):
                     sign = 1 if col % 2 == 0 else -1
                     det += sign * mat[0][col] * calculate_determinant(subsub)
                 return det
+            
             minor_ij = calculate_determinant(submatrix)
             # Apply sign based on position: (-1)^(i+j)
             sign = 1 if (i + j) % 2 == 0 else -1
