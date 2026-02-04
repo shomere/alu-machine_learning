@@ -1,95 +1,73 @@
 #!/usr/bin/env python3
 """
-Adjugate Matrix Calculation Module
-
-This module provides a function to calculate the adjugate matrix
-of a square matrix.
+Calculates the adjugate matrix of a matrix
 """
 
 
 def adjugate(matrix):
     """
-    Calculate the adjugate matrix of a square matrix.
-
-    Args:
-        matrix: A list of lists representing a square matrix
-
-    Returns:
-        list: The adjugate matrix
-
-    Raises:
-        TypeError: If matrix is not a list of lists
-        ValueError: If matrix is not a non-empty square matrix
+    Calculates the adjugate matrix of a matrix
     """
-    # Check if matrix is a list
-    if not isinstance(matrix, list):
+    # Type check
+    if not isinstance(matrix, list) or \
+       not all(isinstance(row, list) for row in matrix):
         raise TypeError("matrix must be a list of lists")
 
-    # Check if matrix is a list of lists
-    if not matrix or not all(isinstance(row, list) for row in matrix):
-        raise TypeError("matrix must be a list of lists")
+    # Square & non-empty check
+    if matrix == [] or any(len(row) != len(matrix) for row in matrix):
+        raise ValueError("matrix must be a non-empty square matrix")
 
-    # Check if matrix is square
     n = len(matrix)
-    if n == 0:
-        raise ValueError("matrix must be a non-empty square matrix")
-    if not all(len(row) == n for row in matrix):
-        raise ValueError("matrix must be a non-empty square matrix")
 
-    # Base case: 1x1 matrix
+    # Special case: 1x1 matrix
     if n == 1:
         return [[1]]
 
-    # Calculate cofactor matrix
-    cofactor_matrix = []
-    for i in range(n):
-        cofactor_row = []
-        for j in range(n):
-            # Create submatrix by removing row i and column j
-            submatrix = []
-            for row_idx in range(n):
-                if row_idx != i:
-                    subrow = []
-                    for col_idx in range(n):
-                        if col_idx != j:
-                            subrow.append(matrix[row_idx][col_idx])
-                    submatrix.append(subrow)
-            
-            # Calculate determinant of submatrix
-            # Helper function for determinant calculation
-            def calculate_determinant(mat):
-                size = len(mat)
-                if size == 1:
-                    return mat[0][0]
-                if size == 2:
-                    return mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]
-                det = 0
-                for col in range(size):
-                    # Create subsubmatrix
-                    subsub = []
-                    for r in range(1, size):
-                        subrow = []
-                        for c in range(size):
-                            if c != col:
-                                subrow.append(mat[r][c])
-                        subsub.append(subrow)
-                    sign = 1 if col % 2 == 0 else -1
-                    det += sign * mat[0][col] * calculate_determinant(subsub)
-                return det
-            
-            minor_ij = calculate_determinant(submatrix)
-            # Apply sign based on position: (-1)^(i+j)
-            sign = 1 if (i + j) % 2 == 0 else -1
-            cofactor_ij = sign * minor_ij
-            cofactor_row.append(cofactor_ij)
-        cofactor_matrix.append(cofactor_row)
+    cof = cofactor(matrix)
 
-    # Transpose the cofactor matrix to get the adjugate
-    adjugate_matrix = []
-    for i in range(n):
-        adjugate_row = []
-        for j in range(n):
-            adjugate_row.append(cofactor_matrix[j][i])
-        adjugate_matrix.append(adjugate_row)
+    # Transpose cofactor matrix
+    adj = [[cof[j][i] for j in range(n)] for i in range(n)]
 
-    return adjugate_matrix
+    return adj
+
+
+def cofactor(matrix):
+    """
+    Calculates the cofactor matrix of a matrix
+    """
+    n = len(matrix)
+    cofactors = []
+
+    for i in range(n):
+        row = []
+        for j in range(n):
+            sub = [
+                matrix[r][:j] + matrix[r][j + 1:]
+                for r in range(n) if r != i
+            ]
+            row.append(((-1) ** (i + j)) * determinant(sub))
+        cofactors.append(row)
+
+    return cofactors
+
+
+def determinant(matrix):
+    """
+    Calculates the determinant of a matrix
+    """
+    if len(matrix) == 1:
+        return matrix[0][0]
+
+    if len(matrix) == 2:
+        return matrix[0][0] * matrix[1][1] - \
+               matrix[0][1] * matrix[1][0]
+
+    det = 0
+    for c in range(len(matrix)):
+        sub = [
+            row[:c] + row[c + 1:]
+            for row in matrix[1:]
+        ]
+        det += ((-1) ** c) * matrix[0][c] * determinant(sub)
+
+    return det
