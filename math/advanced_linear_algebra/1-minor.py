@@ -54,7 +54,6 @@ def minor(matrix):
                         if col_idx != j:
                             subrow.append(matrix[row_idx][col_idx])
                     submatrix.append(subrow)
-            
             # Calculate determinant of submatrix
             # Helper function for determinant calculation
             def calculate_determinant(mat):
@@ -76,7 +75,6 @@ def minor(matrix):
                     sign = 1 if col % 2 == 0 else -1
                     det += sign * mat[0][col] * calculate_determinant(subsub)
                 return det
-            
             minor_ij = calculate_determinant(submatrix)
             minor_row.append(minor_ij)
         minor_matrix.append(minor_row)
