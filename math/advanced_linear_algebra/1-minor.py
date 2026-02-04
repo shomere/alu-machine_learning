@@ -40,6 +40,7 @@ def minor(matrix):
     if n == 1:
         return [[1]]
 
+    # Calculate minor matrix
     minor_matrix = []
     for i in range(n):
         minor_row = []
@@ -53,20 +54,15 @@ def minor(matrix):
                         if col_idx != j:
                             subrow.append(matrix[row_idx][col_idx])
                     submatrix.append(subrow)
+            
             # Calculate determinant of submatrix
-            # Helper function for determinant of small matrix
-            def det_2x2(mat):
-                if len(mat) == 2:
-                    return mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]
-                # For 1x1
-                return mat[0][0]
-            # Calculate determinant recursively
+            # Helper function for determinant calculation
             def calculate_determinant(mat):
                 size = len(mat)
                 if size == 1:
                     return mat[0][0]
                 if size == 2:
-                    return det_2x2(mat)
+                    return mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]
                 det = 0
                 for col in range(size):
                     # Create subsubmatrix
@@ -80,6 +76,7 @@ def minor(matrix):
                     sign = 1 if col % 2 == 0 else -1
                     det += sign * mat[0][col] * calculate_determinant(subsub)
                 return det
+            
             minor_ij = calculate_determinant(submatrix)
             minor_row.append(minor_ij)
         minor_matrix.append(minor_row)
