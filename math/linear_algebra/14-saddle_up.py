@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Module that provides a function to perform matrix multiplication on NumPy arrays.
+Module that provides a function to perform matrix multiplication on NumPy
+arrays.
 """
 
 import numpy as np
