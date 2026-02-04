@@ -48,6 +48,7 @@ def inverse(matrix):
         if len(mat) == 2:
             return mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]
         return mat[0][0]
+
     def calculate_determinant(mat):
         size = len(mat)
         if size == 1:
@@ -69,6 +70,7 @@ def inverse(matrix):
         return det
 
     determinant_val = calculate_determinant(matrix)
+
     # Check if matrix is singular (determinant = 0)
     if determinant_val == 0:
         return None
