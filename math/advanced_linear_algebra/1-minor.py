@@ -33,7 +33,6 @@ def minor(matrix):
     n = len(matrix)
     if n == 0:
         raise ValueError("matrix must be a non-empty square matrix")
-    
     if not all(len(row) == n for row in matrix):
         raise ValueError("matrix must be a non-empty square matrix")
 
@@ -54,7 +53,6 @@ def minor(matrix):
                         if col_idx != j:
                             subrow.append(matrix[row_idx][col_idx])
                     submatrix.append(subrow)
-            
             # Calculate determinant of submatrix
             # Helper function for determinant of small matrix
             def det_2x2(mat):
@@ -62,7 +60,6 @@ def minor(matrix):
                     return mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]
                 # For 1x1
                 return mat[0][0]
-            
             # Calculate determinant recursively
             def calculate_determinant(mat):
                 size = len(mat)
@@ -70,7 +67,6 @@ def minor(matrix):
                     return mat[0][0]
                 if size == 2:
                     return det_2x2(mat)
-                
                 det = 0
                 for col in range(size):
                     # Create subsubmatrix
@@ -84,7 +80,6 @@ def minor(matrix):
                     sign = 1 if col % 2 == 0 else -1
                     det += sign * mat[0][col] * calculate_determinant(subsub)
                 return det
-            
             minor_ij = calculate_determinant(submatrix)
             minor_row.append(minor_ij)
         minor_matrix.append(minor_row)
