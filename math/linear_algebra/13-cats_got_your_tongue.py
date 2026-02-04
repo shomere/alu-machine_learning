@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Module that provides a function to concatenate two matrices along a specific axis.
+Module that provides a function to concatenate two matrices along a specific
+axis.
 """
 
 import numpy as np
