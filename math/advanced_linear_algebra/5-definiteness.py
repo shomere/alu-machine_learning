@@ -37,7 +37,7 @@ def definiteness(matrix):
     # Calculate eigenvalues
     try:
         eigenvalues = np.linalg.eigvals(matrix)
-    except:
+    except np.linalg.LinAlgError:
         return None
 
     # Check if eigenvalues are all real (should be for symmetric matrix)
