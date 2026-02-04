@@ -7,4 +7,4 @@ import numpy as np
 
 def np_transpose(matrix):
     """Transpose a matrix using NumPy"""
-    return matrix.T
+    return np.transpose(matrix)
