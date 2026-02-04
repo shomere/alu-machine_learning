@@ -1,82 +1,63 @@
 #!/usr/bin/env python3
 """
-Minor Matrix Calculation Module
-
-This module provides a function to calculate the minor matrix
-of a square matrix.
+Calculates the minor matrix of a matrix
 """
 
 
 def minor(matrix):
     """
-    Calculate the minor matrix of a square matrix.
-
-    Args:
-        matrix: A list of lists representing a square matrix
-
-    Returns:
-        list: The minor matrix
-
-    Raises:
-        TypeError: If matrix is not a list of lists
-        ValueError: If matrix is not a non-empty square matrix
+    Calculates the minor matrix of a matrix
     """
-    # Check if matrix is a list
-    if not isinstance(matrix, list):
+    # Type check: must be a list of lists
+    if not isinstance(matrix, list) or \
+       not all(isinstance(row, list) for row in matrix):
         raise TypeError("matrix must be a list of lists")
 
-    # Check if matrix is a list of lists
-    if not matrix or not all(isinstance(row, list) for row in matrix):
-        raise TypeError("matrix must be a list of lists")
+    # Must be non-empty square matrix
+    if matrix == [] or any(len(row) != len(matrix) for row in matrix):
+        raise ValueError("matrix must be a non-empty square matrix")
 
-    # Check if matrix is square
     n = len(matrix)
-    if n == 0:
-        raise ValueError("matrix must be a non-empty square matrix")
-    if not all(len(row) == n for row in matrix):
-        raise ValueError("matrix must be a non-empty square matrix")
 
-    # Base case: 1x1 matrix
+    # Special case: 1x1 matrix
     if n == 1:
         return [[1]]
 
-    # Calculate minor matrix
-    minor_matrix = []
+    minors = []
     for i in range(n):
-        minor_row = []
+        row_minors = []
         for j in range(n):
-            # Create submatrix by removing row i and column j
-            submatrix = []
-            for row_idx in range(n):
-                if row_idx != i:
-                    subrow = []
-                    for col_idx in range(n):
-                        if col_idx != j:
-                            subrow.append(matrix[row_idx][col_idx])
-                    submatrix.append(subrow)
-            # Calculate determinant of submatrix
-            # Helper function for determinant calculation
-            def calculate_determinant(mat):
-                size = len(mat)
-                if size == 1:
-                    return mat[0][0]
-                if size == 2:
-                    return mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]
-                det = 0
-                for col in range(size):
-                    # Create subsubmatrix
-                    subsub = []
-                    for r in range(1, size):
-                        subrow = []
-                        for c in range(size):
-                            if c != col:
-                                subrow.append(mat[r][c])
-                        subsub.append(subrow)
-                    sign = 1 if col % 2 == 0 else -1
-                    det += sign * mat[0][col] * calculate_determinant(subsub)
-                return det
-            minor_ij = calculate_determinant(submatrix)
-            minor_row.append(minor_ij)
-        minor_matrix.append(minor_row)
+            sub = [
+                matrix[r][:j] + matrix[r][j + 1:]
+                for r in range(n) if r != i
+            ]
 
-    return minor_matrix
+            det = sub[0][0] * sub[1][1] - sub[0][1] * sub[1][0] \
+                if len(sub) == 2 else determinant(sub)
+
+            row_minors.append(det)
+        minors.append(row_minors)
+
+    return minors
+
+
+def determinant(matrix):
+    """
+    Recursively calculates determinant
+    """
+    if len(matrix) == 1:
+        return matrix[0][0]
+
+    if len(matrix) == 2:
+        return matrix[0][0] * matrix[1][1] - \
+               matrix[0][1] * matrix[1][0]
+
+    det = 0
+    for c in range(len(matrix)):
+        sub = [
+            row[:c] + row[c + 1:]
+            for row in matrix[1:]
+        ]
+        det += ((-1) ** c) * matrix[0][c] * determinant(sub)
+
+    return det
