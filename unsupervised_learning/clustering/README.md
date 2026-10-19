@@ -1,0 +1,2 @@
+This clustering project "Clustering teaches models how to discover hidden structures, natural groupings, and underlying patterns in unlabeled data without human supervision.
+Instead of learning from pre-assigned "right answers" or target labels (like in supervised learning), clustering teaches algorithms to evaluate how similar or different data points are based on feature distances and densities)
