@@ -52,9 +52,6 @@ def expectation(X, pi, m, S):
         return None, None
 
     # Validate priors
-    if np.any(pi < 0):
-        return None, None
-
     if not np.isclose(np.sum(pi), 1):
         return None, None
 
@@ -76,7 +73,7 @@ def expectation(X, pi, m, S):
         return None, None
 
     # Normalize responsibilities
-    g = g / total
+    g /= total
 
     # Log likelihood
     l = np.sum(np.log(total))
