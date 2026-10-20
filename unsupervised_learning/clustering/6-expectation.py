@@ -28,6 +28,6 @@ def expectation(X, pi, m, S):
             return None, None
         g[i] = pi[i] * P
     marginal = np.sum(g, axis=0)
-    l = np.sum(np.log(marginal))
+    lik = np.sum(np.log(marginal))
     g = g / marginal
-    return g, l
+    return g, lik
