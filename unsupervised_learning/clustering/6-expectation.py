@@ -21,24 +21,29 @@ def expectation(X, pi, m, S):
         or (None, None) on failure.
     """
 
-    if (not isinstance(X, np.ndarray) or X.ndim != 2):
+    if not isinstance(X, np.ndarray) or X.ndim != 2:
         return None, None
 
-    if (not isinstance(pi, np.ndarray) or pi.ndim != 1):
+    if not isinstance(pi, np.ndarray) or pi.ndim != 1:
         return None, None
 
-    if (not isinstance(m, np.ndarray) or m.ndim != 2):
+    if not isinstance(m, np.ndarray) or m.ndim != 2:
         return None, None
 
-    if (not isinstance(S, np.ndarray) or S.ndim != 3):
+    if not isinstance(S, np.ndarray) or S.ndim != 3:
         return None, None
 
     n, d = X.shape
     k = pi.shape[0]
 
-    if (not np.isclose(np.sum(pi), 1) or
-        np.any(pi < 0)):
-            return None, None
+    if m.shape != (k, d):
+        return None, None
+
+    if S.shape != (k, d, d):
+        return None, None
+
+    if not np.isclose(np.sum(pi), 1):
+        return None, None
 
     g = np.zeros((k, n))
 
@@ -52,9 +57,10 @@ def expectation(X, pi, m, S):
 
     total = np.sum(g, axis=0)
 
-    if np.any(total == 0):
+    if np.any(total <= 0):
         return None, None
 
     g /= total
-
     l = np.sum(np.log(total))
+
+    return g, l
