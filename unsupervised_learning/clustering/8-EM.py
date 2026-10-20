@@ -1,84 +1,45 @@
 #!/usr/bin/env python3
-"""Expectation Maximization"""
-
+"""Expectation Maximization for a GMM"""
 import numpy as np
-
 initialize = __import__('4-initialize').initialize
 expectation = __import__('6-expectation').expectation
 maximization = __import__('7-maximization').maximization
 
 
-def expectation_maximization(X, k, iterations=1000,
-                             tol=1e-5, verbose=False):
-    """
-    Performs the expectation maximization for a GMM.
-
-    Args:
-        X: numpy.ndarray of shape (n, d)
-        k: number of clusters
-        iterations: maximum number of iterations
-        tol: tolerance for early stopping
-        verbose: if True, prints log likelihood
-
-    Returns:
-        pi, m, S, g, log_likelihood
-        or (None, None, None, None, None) on failure.
-    """
-
+def expectation_maximization(X, k, iterations=1000, tol=1e-5, verbose=False):
+    """Performs the EM algorithm for a GMM"""
+    fail = (None, None, None, None, None)
     if not isinstance(X, np.ndarray) or X.ndim != 2:
-        return None, None, None, None, None
-
-    n, _ = X.shape
-
-    if not isinstance(k, int) or k <= 0 or k > n:
-        return None, None, None, None, None
-
+        return fail
+    if not isinstance(k, int) or k <= 0 or k > X.shape[0]:
+        return fail
     if not isinstance(iterations, int) or iterations <= 0:
-        return None, None, None, None, None
-
-    if not isinstance(tol, (float, int)) or tol < 0:
-        return None, None, None, None, None
-
+        return fail
+    if not isinstance(tol, (int, float)) or tol < 0:
+        return fail
     if not isinstance(verbose, bool):
-        return None, None, None, None, None
+        return fail
 
     pi, m, S = initialize(X, k)
-
     if pi is None:
-        return None, None, None, None, None
-
-    previous = None
-
-    previous = 0
-
-    for i in range(iterations):
-        # E-step
-        g, log_likelihood = expectation(X, pi, m, S)
-        if g is None:
-            return None, None, None, None, None
-
-        # Print every 10 iterations
-        if verbose and i % 10 == 0:
-            print("Log Likelihood after {} iterations: {:.5f}"
-                 .format(i, log_likelihood))
-
-        # Early stopping
-        if abs(log_likelihood - previous) <= tol:
-            break
-
-        previous = log_likelihood
-
-        # M-step
-        pi, m, S = maximization(X, g)
-        if pi is None:
-            return None, None, None, None, None
-
-    g, log_likelihood = expectation(X, pi, m, S)
+        return fail
+    g, lik = expectation(X, pi, m, S)
     if g is None:
-        return None, None, None, None, None
-
+        return fail
+    if verbose:
+        print("Log Likelihood after 0 iterations: {}".format(round(lik, 5)))
+    prev = lik
+    i = 0
+    for i in range(1, iterations + 1):
+        pi, m, S = maximization(X, g)
+        g, lik = expectation(X, pi, m, S)
+        if verbose and i % 10 == 0:
+            print("Log Likelihood after {} iterations: {}".format(
+                i, round(lik, 5)))
+        if abs(lik - prev) <= tol:
+            break
+        prev = lik
     if verbose and i % 10 != 0:
-        print("Log Likelihood after {} iterations: {:.5f}"
-             .format(i, log_likelihood))
-
-    return pi, m, S, g, log_likelihood
+        print("Log Likelihood after {} iterations: {}".format(
+            i, round(lik, 5)))
+    return pi, m, S, g, lik
