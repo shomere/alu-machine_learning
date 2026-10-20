@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+"""Agglomerative clustering with Ward linkage"""
+import scipy.cluster.hierarchy
+import matplotlib.pyplot as plt
+
+
+def agglomerative(X, dist):
+    """Performs agglomerative clustering and shows the dendrogram"""
+    Z = scipy.cluster.hierarchy.linkage(X, method='ward')
+    clss = scipy.cluster.hierarchy.fcluster(Z, t=dist, criterion='distance')
+    plt.figure()
+    scipy.cluster.hierarchy.dendrogram(Z, color_threshold=dist)
+    plt.show()
+    return clss
