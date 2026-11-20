@@ -33,10 +33,12 @@ def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
         return None, None, None, None
 
     if kmax is None:
+        if kmin > n:
+            return None, None, None, None
         kmax = n
 
     if (not isinstance(kmax, int) or isinstance(kmax, bool) or
-            kmax < kmin or kmax > n):
+            kmax < 1 or kmax < kmin or kmax > n):
         return None, None, None, None
 
     if (not isinstance(iterations, int) or isinstance(iterations, bool) or
